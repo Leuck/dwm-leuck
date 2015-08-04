@@ -1,6 +1,7 @@
 #! /bin/bash
 nitrogen --restore &
-/home/leuck/dwmstatus &
+/usr/bin/dwmstatus &
+pulseaudio --start &
 dropboxd &
 mpdscribble &
 xcompmgr &
