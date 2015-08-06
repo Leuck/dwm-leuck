@@ -2,7 +2,7 @@
 nitrogen --restore &
 /usr/bin/dwmstatus &
 pulseaudio --start &
-dropboxd &
+dropbox &
 mpdscribble &
 xcompmgr &
 /usr/bin/dwm
