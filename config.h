@@ -1,7 +1,10 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char font[] = "-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-*";
+static const char *fonts[] = {
+	"Terminus:size=10"
+};
+static const char dmenufont[]       = "Terminus:size=10";
 static const char normbordercolor[] = "#252525";
 static const char normbgcolor[]     = "#555555";
 static const char normfgcolor[]     = "#cdcdcd";
@@ -9,33 +12,34 @@ static const char selbordercolor[]  = "#2096b4";
 static const char selbgcolor[]      = "#1692b0";
 static const char selfgcolor[]      = "#ffffff";
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int snap      = 10;       /* snap pixel */
-static const Bool showbar           = True;     /* False means no bar */
-static const Bool topbar            = True;     /* False means bottom bar */
+static const unsigned int snap      = 32;       /* snap pixel */
+static const int showbar            = 1;        /* 0 means no bar */
+static const int topbar             = 1;        /* 0 means bottom bar */
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
+	/* xprop(1):
+	 *	WM_CLASS(STRING) = instance, class
+	 *	WM_NAME(STRING) = title
+	 */
 	/* class          instance    title          tags mask        isfloating   monitor */
-	{ "Gimp",         NULL,        NULL,          0,                True,        -1 },
-	{ "Tilda",        NULL,        NULL,          0,                True,        -1 },
 	{ "qjackctl",     NULL,        NULL,          0,                True,        -1 },
-	{ "MPlayer",      NULL,        NULL,          0,                True,        -1 },
 	{ "Lxappearance", NULL,        NULL,          0,                True,        -1 },
+	{ "Nitrogen",     NULL,        NULL,          0,                True,        -1 },
 	{ "Firefox",      "Download",  NULL,          0,                True,        -1 },
 	{ "Firefox",      NULL,  "Firefox Preferences",     0,          True,        -1 },
 	{ "Skype",        NULL,        NULL,          0,                True,        -1 },
 	{ NULL,           NULL,        "Event Tester",        0,        True,        -1 },
 	{ NULL,           NULL,        "Save File",           0,        True,        -1 },
-	{ NULL,           NULL,        "File Operation Progress",   0,  True,        -1 },
+	{ "Dolphin",      NULL,       "Copying",   0,  True,        -1 }
 };
 
 /* layout(s) */
-static const float mfact      = 0.55; /* factor of master area size [0.05..0.95] */
-static const int nmaster      = 1;     /* number of clients in master area */
-static const Bool resizehints = True; /* True means respect size hints in 
-tiled resizals */
+static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const int nmaster     = 1;    /* number of clients in master area */
+static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -56,7 +60,8 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *dmenucmd[]	= { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]	= { "urxvt", NULL };
 static const char *volup[]	= { "amixer", "set", "Master,0", "5%+,5%+", "unmute", NULL };
 static const char *voldown[]	= { "amixer", "set", "Master,0", "5%-,5%-", "unmute", NULL };
@@ -66,11 +71,11 @@ static const char *mnext[]	= { "mpc", "next", "--host", "b3", NULL };
 static const char *mprevious[]	= { "mpc", "prev", "--host", "b3", NULL };
 static const char *mtoggle[]	= { "mpc", "toggle", "--host", "b3", NULL };
 static const char *screenlock[] = { "i3lock", "--color=000000", NULL };
-static const char *screenshot[]	= { "/home/leuck/documentos/scripts/autoscreenshot.sh", NULL };
+static const char *brightup[]   = { "xbacklight", "+10", NULL};
+static const char *brightdown[] = { "xbacklight", "-10", NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ 0,                             0xff61,   spawn,          {.v = screenshot } },
 	{ 0,                         0x1008ff13,   spawn,          {.v = volup } },
 	{ 0,                         0x1008ff11,   spawn,          {.v = voldown } },
 	{ MODKEY,                       XK_i,      spawn,          {.v = browsercmd } },
@@ -78,9 +83,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_o,      spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_u,      spawn,          {.v = filemgr } },
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          {.v = screenlock } },
-	{ MODKEY,                       0xff53,    spawn,          {.v = mnext } },
-	{ MODKEY,                       0xff51,    spawn,          {.v = mprevious } },
-	{ MODKEY,                       0xff54,    spawn,          {.v = mtoggle } },
+	{ 0,                        0x1008ff17,    spawn,          {.v = mnext } },
+	{ 0,                        0x1008ff16,    spawn,          {.v = mprevious } },
+	{ 0,                        0x1008ff14,    spawn,          {.v = mtoggle } },
+	{ 0,                        0x1008ff02,    spawn,          {.v = brightup } },
+	{ 0,                        0x1008ff03,    spawn,          {.v = brightdown } },
 
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },

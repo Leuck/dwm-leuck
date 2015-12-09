@@ -2,7 +2,7 @@
 Encoding=UTF-8
 DesktopNames=DWM
 Name=Dwm
-Comment=Dynamic window manager for Leuck
+Comment=Dynamic window manager for leuck
 Exec=/usr/local/bin/dwminit.sh
 Icon=dwm
 Type=XSession
